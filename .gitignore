@@ -1,0 +1,7 @@
+node_modules
+dist
+vite.log
+*.png
+.env
+.env.local
+.claude/

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Conveyor Digital Twin</title>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #111318;
+        font-family: system-ui, sans-serif;
+      }
+      #app {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+      }
+      #overlay {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        color: #e6e6e6;
+        font-size: 13px;
+        line-height: 1.4;
+        background: rgba(20, 22, 28, 0.55);
+        padding: 8px 12px;
+        border-radius: 6px;
+        pointer-events: none;
+        user-select: none;
+      }
+      #loading {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #e6e6e6;
+        font-size: 14px;
+        background: #111318;
+        z-index: 10;
+      }
+      .stat-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        background: rgba(16, 18, 24, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(2px);
+        font-family: system-ui, sans-serif;
+        white-space: nowrap;
+        transform: translate(-50%, -100%);
+      }
+      .stat-title {
+        font-size: 10px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #9aa3b2;
+      }
+      .stat-value {
+        font-size: 15px;
+        font-weight: 600;
+        color: #f2f4f8;
+      }
+      .stat-box.blue .stat-value { color: #6ea8ff; }
+      .stat-box.green .stat-value { color: #6be08a; }
+      .stat-box.red .stat-value { color: #ff7a7a; }
+      .stat-box.servo .stat-value { color: #d8b4ff; }
+      .stat-box.sensor {
+        align-items: flex-start;
+      }
+      .stat-box.sensor .stat-value {
+        font-size: 12px;
+        font-weight: 500;
+      }
+      #connection-status {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #cfd3db;
+        font-size: 12px;
+        background: rgba(20, 22, 28, 0.55);
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-family: system-ui, sans-serif;
+      }
+      #connection-status .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #666;
+      }
+      #connection-status.live .dot { background: #4ade80; }
+      #connection-status.offline .dot { background: #f87171; }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="loading">Loading conveyor model…</div>
+      <div id="overlay">Conveyor Digital Twin — drag to orbit, scroll to zoom</div>
+      <div id="connection-status"><span class="dot"></span><span class="label">Connecting…</span></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
