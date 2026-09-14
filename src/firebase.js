@@ -20,7 +20,9 @@ export const db = getDatabase(app);
 //   servoAngle: 30,          // 0-180, driven by the sorter servo
 //   detectedColor: "red",    // "red" | "green" | "blue" | "none"
 //   counts: { red: 0, green: 0, blue: 0 },
-//   sensor: { r: 0, g: 0, b: 0, clear: 0 }  // raw color sensor reading
+//   sensor: { r: 0, g: 0, b: 0, clear: 0 }, // raw color sensor reading
+//   state: "idle",           // "idle" | "feeding" | "sensing" | "sorting" | "returning"
+//   cycleId: 0,              // increments once per IR trigger/sort cycle
 // }
 export function subscribeToSorterState(callback) {
   const stateRef = ref(db, '/');

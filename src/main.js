@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { ServoController } from './servo.js';
 import { createLabelRenderer, attachLabel, makeStatBox } from './labels.js';
 import { subscribeToSorterState, subscribeToConnectionState } from './firebase.js';
+import { BeltAnimation } from './beltAnimation.js';
 
 const container = document.getElementById('app');
 const loadingEl = document.getElementById('loading');
@@ -66,15 +67,31 @@ scene.add(grid);
 // Model registry so future commands (move belt, rotate servo, etc.) can find named parts.
 export const modelParts = {};
 let servoController = null;
+let beltAnimation = null;
 
 const liveState = {
   servoAngle: 90,
   detectedColor: 'none',
   counts: { red: 0, green: 0, blue: 0 },
   sensor: { r: 0, g: 0, b: 0, clear: 0 },
+  state: 'idle',
+  cycleId: 0,
 };
 
 let statRefs = null;
+const phaseEl = document.getElementById('phase-status');
+
+function refreshPhaseLabel() {
+  if (!phaseEl) return;
+  const labels = {
+    idle: 'Idle — waiting for cube',
+    feeding: 'Feeding belt…',
+    sensing: 'Reading color…',
+    sorting: 'Sorting…',
+    returning: 'Returning to idle…',
+  };
+  phaseEl.textContent = labels[liveState.state] || liveState.state;
+}
 
 function setupLiveLabels() {
   const servo = modelParts['sorter_servo_assembly'];
@@ -131,8 +148,16 @@ subscribeToSorterState((data) => {
   if (data.detectedColor) liveState.detectedColor = data.detectedColor;
   if (data.counts) liveState.counts = data.counts;
   if (data.sensor) liveState.sensor = data.sensor;
+  if (data.state) liveState.state = data.state;
+  if (typeof data.cycleId === 'number') liveState.cycleId = data.cycleId;
+
+  beltAnimation?.onFirebaseState(
+    { state: data.state, cycleId: data.cycleId, detectedColor: data.detectedColor },
+    performance.now()
+  );
 
   refreshLabels();
+  refreshPhaseLabel();
 });
 
 const loader = new GLTFLoader();
@@ -209,6 +234,8 @@ loader.load(
     }
 
     setupLiveLabels();
+    beltAnimation = new BeltAnimation(scene, modelParts);
+    refreshPhaseLabel();
 
     loadingEl.style.display = 'none';
   },
@@ -241,6 +268,10 @@ function animate() {
     if (statRefs) {
       statRefs.servoStat.valueEl.textContent = `${Math.round(servoController.currentAngle)}°`;
     }
+  }
+  if (beltAnimation) {
+    const beltRunning = liveState.state === 'feeding' || liveState.state === 'returning';
+    beltAnimation.update(performance.now(), beltRunning);
   }
   controls.update();
   renderer.render(scene, camera);

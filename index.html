@@ -99,6 +99,22 @@
       }
       #connection-status.live .dot { background: #4ade80; }
       #connection-status.offline .dot { background: #f87171; }
+      #phase-status {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #f2f4f8;
+        font-size: 13px;
+        font-weight: 500;
+        background: rgba(20, 22, 28, 0.6);
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        pointer-events: none;
+        user-select: none;
+        font-family: system-ui, sans-serif;
+      }
     </style>
   </head>
   <body>
@@ -106,6 +122,7 @@
       <div id="loading">Loading conveyor model…</div>
       <div id="overlay">Conveyor Digital Twin — drag to orbit, scroll to zoom</div>
       <div id="connection-status"><span class="dot"></span><span class="label">Connecting…</span></div>
+      <div id="phase-status">Idle — waiting for cube</div>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>
