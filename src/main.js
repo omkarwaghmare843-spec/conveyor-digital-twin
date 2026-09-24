@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { ServoController } from './servo.js';
+import { ServoController, COLOR_ANGLES } from './servo.js';
 import { createLabelRenderer, attachLabel, makeStatBox } from './labels.js';
 import { subscribeToSorterState, subscribeToConnectionState } from './firebase.js';
 import { BeltAnimation } from './beltAnimation.js';
@@ -70,7 +70,7 @@ let servoController = null;
 let beltAnimation = null;
 
 const liveState = {
-  servoAngle: 90,
+  servoAngle: COLOR_ANGLES.home,
   detectedColor: 'none',
   counts: { red: 0, green: 0, blue: 0 },
   sensor: { r: 0, g: 0, b: 0, clear: 0 },
@@ -230,7 +230,7 @@ loader.load(
       }
       modelParts['servo_pivot'] = pivot;
       servoController = new ServoController(pivot);
-      servoController.applyAngle(90);
+      servoController.applyAngle(COLOR_ANGLES.home);
     }
 
     setupLiveLabels();

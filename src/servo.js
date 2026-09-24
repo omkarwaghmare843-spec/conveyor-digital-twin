@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 
-// Sorting angles: each color routes the paddle to a different bin.
-// red -> 30deg (per the annotated reference image), others spread across 0-180.
+// Sorting angles: each color routes the paddle to a different bin. Matches
+// the firmware's final calibrated servo angles exactly (sorter_esp32.ino).
 export const COLOR_ANGLES = {
-  red: 30,
-  green: 90,
-  blue: 150,
-  none: 90,
+  home: 0,
+  red: 90,
+  green: 70,
+  blue: 10,
+  none: 0,
 };
 
 const DEG2RAD = Math.PI / 180;
@@ -15,8 +16,8 @@ export class ServoController {
   constructor(pivot, { degPerSecond = 180 } = {}) {
     this.pivot = pivot;
     this.degPerSecond = degPerSecond;
-    this.currentAngle = 90;
-    this.targetAngle = 90;
+    this.currentAngle = COLOR_ANGLES.home;
+    this.targetAngle = COLOR_ANGLES.home;
   }
 
   setTargetAngle(angleDeg) {
@@ -39,8 +40,8 @@ export class ServoController {
 
   applyAngle(angleDeg) {
     // Servo horn sweeps 0-180deg; map to a rotation around the shaft's Y axis,
-    // centered so 90deg matches the model's originally authored pose.
-    const offsetFromCenter = (angleDeg - 90) * DEG2RAD;
+    // centered so 0deg (home) matches the model's originally authored pose.
+    const offsetFromCenter = (angleDeg - COLOR_ANGLES.home) * DEG2RAD;
     this.pivot.rotation.y = offsetFromCenter;
   }
 }

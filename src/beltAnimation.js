@@ -190,9 +190,11 @@ export class BeltAnimation {
       case 'sorting': {
         // Slide from the sensor position to the paddle/sort point, then hold
         // while the servo swings and the cube drops into its bin. Blue rides
-        // straight through with no sideways deflection (paddle stays home);
-        // red/green get pushed sideways off the belt centerline into their
-        // bins by the paddle.
+        // straight through with no sideways deflection (paddle stays near
+        // home); red/green get pushed sideways off the belt centerline into
+        // their bins by the paddle. Bin choice here is driven purely by
+        // dropColor (from detectedColor), independent of the servo's actual
+        // angle — see servo.js's COLOR_ANGLES for the angle-per-color values.
         const travelMs = TIMING.servoMoveMs;
         const target = this.binTargets[this.dropColor] || this.binTargets.blue;
         if (elapsed < travelMs) {
