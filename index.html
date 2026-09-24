@@ -115,6 +115,92 @@
         user-select: none;
         font-family: system-ui, sans-serif;
       }
+
+      #dashboard {
+        position: absolute;
+        left: 12px;
+        top: 56px;
+        width: 220px;
+        max-width: calc(100vw - 24px);
+        color: #e6e6e6;
+        background: rgba(16, 18, 24, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 12px 14px 14px;
+        font-family: system-ui, sans-serif;
+        backdrop-filter: blur(3px);
+        user-select: none;
+      }
+      #dashboard .dash-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #9aa3b2;
+        margin-bottom: 10px;
+      }
+      #dashboard .dash-section {
+        margin-bottom: 10px;
+      }
+      #dashboard .dash-section:last-child {
+        margin-bottom: 0;
+      }
+      #dashboard .dash-section-title {
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 4px;
+      }
+      #dashboard .dash-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 2px 0;
+        font-size: 12px;
+      }
+      #dashboard .dash-row .dash-label {
+        color: #9aa3b2;
+      }
+      #dashboard .dash-row .dash-value {
+        color: #f2f4f8;
+        font-weight: 600;
+        text-align: right;
+      }
+      #dashboard .dash-row .dash-value.red { color: #ff7a7a; }
+      #dashboard .dash-row .dash-value.green { color: #6be08a; }
+      #dashboard .dash-row .dash-value.blue { color: #6ea8ff; }
+      #dashboard .dash-row .dash-value.purple { color: #d8b4ff; }
+      #dashboard .dash-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.08);
+        margin: 8px 0;
+      }
+      #dashboard .dash-counts {
+        display: flex;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      #dashboard .dash-count {
+        flex: 1;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 6px;
+        padding: 6px 4px;
+      }
+      #dashboard .dash-count .dash-count-label {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #9aa3b2;
+        margin-bottom: 2px;
+      }
+      #dashboard .dash-count .dash-count-value {
+        font-size: 16px;
+        font-weight: 700;
+      }
     </style>
   </head>
   <body>
@@ -123,6 +209,84 @@
       <div id="overlay">Conveyor Digital Twin — drag to orbit, scroll to zoom</div>
       <div id="connection-status"><span class="dot"></span><span class="label">Connecting…</span></div>
       <div id="phase-status">Idle — waiting for cube</div>
+
+      <div id="dashboard">
+        <div class="dash-title">Conveyor Dashboard</div>
+
+        <div class="dash-section">
+          <div class="dash-section-title">Status</div>
+          <div class="dash-row">
+            <span class="dash-label">State</span>
+            <span class="dash-value purple" id="dash-state">--</span>
+          </div>
+          <div class="dash-row">
+            <span class="dash-label">Cycle ID</span>
+            <span class="dash-value" id="dash-cycle">--</span>
+          </div>
+          <div class="dash-row">
+            <span class="dash-label">Detected Color</span>
+            <span class="dash-value" id="dash-color">--</span>
+          </div>
+        </div>
+
+        <div class="dash-divider"></div>
+
+        <div class="dash-section">
+          <div class="dash-section-title">Servo</div>
+          <div class="dash-row">
+            <span class="dash-label">Firmware Angle</span>
+            <span class="dash-value purple" id="dash-servo-angle">--°</span>
+          </div>
+        </div>
+
+        <div class="dash-divider"></div>
+
+        <div class="dash-section">
+          <div class="dash-section-title">Motor / Belt</div>
+          <div class="dash-row">
+            <span class="dash-label">Feed Duty</span>
+            <span class="dash-value" id="dash-feed-duty">--</span>
+          </div>
+          <div class="dash-row">
+            <span class="dash-label">Post-Detect Duty</span>
+            <span class="dash-value" id="dash-post-duty">--</span>
+          </div>
+        </div>
+
+        <div class="dash-divider"></div>
+
+        <div class="dash-section">
+          <div class="dash-section-title">Color Sensor (Raw)</div>
+          <div class="dash-row">
+            <span class="dash-label">R / G / B</span>
+            <span class="dash-value" id="dash-sensor-rgb">--</span>
+          </div>
+          <div class="dash-row">
+            <span class="dash-label">Clear</span>
+            <span class="dash-value" id="dash-sensor-clear">--</span>
+          </div>
+        </div>
+
+        <div class="dash-divider"></div>
+
+        <div class="dash-section">
+          <div class="dash-section-title">Sort Counts</div>
+          <div class="dash-counts">
+            <div class="dash-count">
+              <div class="dash-count-label">Red</div>
+              <div class="dash-count-value red" id="dash-count-red">0</div>
+            </div>
+            <div class="dash-count">
+              <div class="dash-count-label">Green</div>
+              <div class="dash-count-value green" id="dash-count-green">0</div>
+            </div>
+            <div class="dash-count">
+              <div class="dash-count-label">Blue</div>
+              <div class="dash-count-value blue" id="dash-count-blue">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>

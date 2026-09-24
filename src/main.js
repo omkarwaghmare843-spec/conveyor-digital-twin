@@ -93,6 +93,59 @@ function refreshPhaseLabel() {
   phaseEl.textContent = labels[liveState.state] || liveState.state;
 }
 
+// PWM duty constants from the firmware (sorter_esp32.ino FEED_DUTY_PERCENT /
+// POST_DETECT_DUTY_PERCENT). Not pushed live over Firebase, so shown here as
+// fixed reference values rather than faked as a live-changing number.
+const FEED_DUTY_PERCENT = 25;
+const POST_DETECT_DUTY_PERCENT = 40;
+
+const dashEls = {
+  state: document.getElementById('dash-state'),
+  cycle: document.getElementById('dash-cycle'),
+  color: document.getElementById('dash-color'),
+  servoAngle: document.getElementById('dash-servo-angle'),
+  feedDuty: document.getElementById('dash-feed-duty'),
+  postDuty: document.getElementById('dash-post-duty'),
+  sensorRgb: document.getElementById('dash-sensor-rgb'),
+  sensorClear: document.getElementById('dash-sensor-clear'),
+  countRed: document.getElementById('dash-count-red'),
+  countGreen: document.getElementById('dash-count-green'),
+  countBlue: document.getElementById('dash-count-blue'),
+};
+
+const DASH_COLOR_CLASS = { red: 'red', green: 'green', blue: 'blue' };
+
+function refreshDashboard() {
+  if (!dashEls.state) return;
+
+  const stateLabels = {
+    idle: 'Idle',
+    feeding: 'Feeding',
+    sensing: 'Sensing',
+    sorting: 'Sorting',
+    returning: 'Returning',
+  };
+  dashEls.state.textContent = stateLabels[liveState.state] || liveState.state || '--';
+  dashEls.cycle.textContent = liveState.cycleId ?? '--';
+
+  const color = liveState.detectedColor || 'none';
+  dashEls.color.textContent = color === 'none' ? 'None' : color[0].toUpperCase() + color.slice(1);
+  dashEls.color.className = `dash-value ${DASH_COLOR_CLASS[color] || ''}`;
+
+  dashEls.servoAngle.textContent = `${Math.round(liveState.servoAngle ?? 0)}°`;
+
+  dashEls.feedDuty.textContent = `${FEED_DUTY_PERCENT}%`;
+  dashEls.postDuty.textContent = `${POST_DETECT_DUTY_PERCENT}%`;
+
+  const s = liveState.sensor;
+  dashEls.sensorRgb.textContent = `${s.r} / ${s.g} / ${s.b}`;
+  dashEls.sensorClear.textContent = String(s.clear ?? 0);
+
+  dashEls.countRed.textContent = liveState.counts.red ?? 0;
+  dashEls.countGreen.textContent = liveState.counts.green ?? 0;
+  dashEls.countBlue.textContent = liveState.counts.blue ?? 0;
+}
+
 function setupLiveLabels() {
   const servo = modelParts['sorter_servo_assembly'];
   const sensor = modelParts['color_sensor_assembly'];
@@ -163,7 +216,10 @@ subscribeToSorterState((data) => {
 
   refreshLabels();
   refreshPhaseLabel();
+  refreshDashboard();
 });
+
+refreshDashboard();
 
 const loader = new GLTFLoader();
 loader.load(
