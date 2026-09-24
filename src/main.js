@@ -139,10 +139,15 @@ subscribeToConnectionState((connected) => {
 });
 
 subscribeToSorterState((data) => {
+  // The on-screen label always shows the real firmware servoAngle as-is.
+  // The 3D paddle's rotation is driven separately, from detectedColor via
+  // COLOR_ANGLES (servo.js) — those are visually-tuned angles for this
+  // model's geometry, not required to numerically match the physical
+  // servo's actual angle.
   if (typeof data.servoAngle === 'number') {
     liveState.servoAngle = data.servoAngle;
-    servoController?.setTargetAngle(data.servoAngle);
-  } else if (data.detectedColor) {
+  }
+  if (data.detectedColor) {
     servoController?.setTargetColor(data.detectedColor);
   }
   if (data.detectedColor) liveState.detectedColor = data.detectedColor;
