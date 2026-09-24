@@ -39,9 +39,15 @@ export class ServoController {
   }
 
   applyAngle(angleDeg) {
-    // Servo horn sweeps 0-180deg; map to a rotation around the shaft's Y axis,
-    // centered so 0deg (home) matches the model's originally authored pose.
-    const offsetFromCenter = (angleDeg - COLOR_ANGLES.home) * DEG2RAD;
+    // Servo horn sweeps 0-180deg; map to a rotation around the shaft's Y
+    // axis. The model's originally authored pose (rotation.y = 0) doesn't
+    // correspond to any of our calibrated angles by itself — verified
+    // visually that a fixed 90deg rotation offset is what makes the paddle
+    // sit flat/parallel to the belt (pointing at the straight-through blue
+    // bin) at angleDeg=10, and swing up across the belt toward red at
+    // angleDeg=90, matching the physical servo's real behavior.
+    const MODEL_POSE_OFFSET_DEG = 90;
+    const offsetFromCenter = (angleDeg - MODEL_POSE_OFFSET_DEG) * DEG2RAD;
     this.pivot.rotation.y = offsetFromCenter;
   }
 }

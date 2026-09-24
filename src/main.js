@@ -176,6 +176,12 @@ loader.load(
       }
     });
 
+    // The GLB ships with a static decorative cube already sitting on the
+    // belt (and one already settled in a bin) — hide both so only the
+    // live, Firebase-driven cube (see beltAnimation.js) is ever visible.
+    if (modelParts['sample_block']) modelParts['sample_block'].visible = false;
+    if (modelParts['settled_block_in_bin']) modelParts['settled_block_in_bin'].visible = false;
+
     // Auto-fit and center the model in view.
     const box = new THREE.Box3().setFromObject(model);
     const size = box.getSize(new THREE.Vector3());
